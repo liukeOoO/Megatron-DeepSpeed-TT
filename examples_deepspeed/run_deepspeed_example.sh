@@ -54,11 +54,12 @@ train_iters=5
 eval_iters=1
 profile_step_start=3
 profile_step_end=3
-profile_trace_path="/workspace/megatron_deepspeed/astrasim"
+profile_trace_path="/workspace/astrasim"
 rm -fr ${profile_trace_path}
 mkdir -p ${profile_trace_path}/et/
 mkdir -p ${profile_trace_path}/kineto/
 
+export PROTOCOL_BUFFERS_PYTHON_IMPLEMENTATION=python
 nsys="nsys profile -w true -t cuda,nvtx,osrt,cudnn,cublas -s cpu -o nsight_report -f true --capture-range=cudaProfilerApi --cudabacktrace=true --osrt-threshold=10000 -x true"
 #$nsys \
 deepspeed pretrain_gpt.py \

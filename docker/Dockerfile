@@ -19,7 +19,8 @@ RUN apt-get update && \
         curl wget vim tmux emacs less unzip \
         htop iftop iotop ca-certificates openssh-client openssh-server \
         rsync iputils-ping net-tools sudo \
-        llvm-dev
+        llvm-dev \
+        ninja-build
 
 ##############################################################################
 # Installation Latest Git
@@ -33,9 +34,9 @@ RUN add-apt-repository ppa:git-core/ppa -y && \
 # Client Liveness & Uncomment Port 22 for SSH Daemon
 ##############################################################################
 # Keep SSH client alive from server side
-RUN echo "ClientAliveInterval 30" >> /etc/ssh/sshd_config
-RUN cp /etc/ssh/sshd_config ${STAGE_DIR}/sshd_config && \
-        sed "0,/^#Port 22/s//Port 22/" ${STAGE_DIR}/sshd_config > /etc/ssh/sshd_config
+#RUN echo "ClientAliveInterval 30" >> /etc/ssh/sshd_config
+#RUN cp /etc/ssh/sshd_config ${STAGE_DIR}/sshd_config && \
+#        sed "0,/^#Port 22/s//Port 22/" ${STAGE_DIR}/sshd_config > /etc/ssh/sshd_config
 
 ##############################################################################
 # Mellanox OFED
@@ -94,21 +95,15 @@ RUN mv /usr/local/mpi/bin/mpirun /usr/local/mpi/bin/mpirun.real && \
 ##############################################################################
 ENV DEBIAN_FRONTEND=noninteractive
 ENV PYTHON_VERSION=3
-#RUN apt-get install -y python3 python3-dev && \
-#        rm -f /usr/bin/python && \
-#        ln -s /usr/bin/python3 /usr/bin/python && \
-#        curl -O https://bootstrap.pypa.io/pip/3.6/get-pip.py && \
-#        python get-pip.py && \
-#        rm get-pip.py && \
-#        pip install --upgrade pip && \
-#        # Print python an pip version
-#        python -V && pip -V
-
-RUN apt-get update; \
-    apt-get upgrade -y; \
-    apt-get install -y --no-install-recommends \
-        python3 python-is-python3 \
-        python3-pip
+RUN apt-get install -y python3 python3-dev && \
+        rm -f /usr/bin/python && \
+        ln -s /usr/bin/python3 /usr/bin/python && \
+        curl -O https://bootstrap.pypa.io/get-pip.py && \
+        python get-pip.py && \
+        rm get-pip.py && \
+        pip install --upgrade pip && \
+        # Print python an pip version
+        python -V && pip -V
 
 RUN pip install ipython
 
@@ -149,9 +144,9 @@ RUN pip install psutil \
 ##############################################################################
 ## SSH daemon port inside container cannot conflict with host OS port
 ###############################################################################
-ENV SSH_PORT=2222
-RUN cat /etc/ssh/sshd_config > ${STAGE_DIR}/sshd_config && \
-        sed "0,/^Port 22/s//Port ${SSH_PORT}/" ${STAGE_DIR}/sshd_config > /etc/ssh/sshd_config
+#ENV SSH_PORT=2222
+#RUN cat /etc/ssh/sshd_config > ${STAGE_DIR}/sshd_config && \
+#        sed "0,/^Port 22/s//Port ${SSH_PORT}/" ${STAGE_DIR}/sshd_config > /etc/ssh/sshd_config
 
 ##############################################################################
 # PyTorch
@@ -172,7 +167,8 @@ RUN pip install accelerate \
                 protobuf \
                 sacrebleu \
                 py7zr \
-                evaluate
+                evaluate \
+                nltk
 
 ##############################################################################
 # PyYAML build issue
@@ -190,7 +186,7 @@ RUN pip install pyyaml
 RUN useradd --create-home --uid 1000 --shell /bin/bash deepspeed
 RUN usermod -aG sudo deepspeed
 RUN echo "deepspeed ALL=(ALL) NOPASSWD: ALL" >> /etc/sudoers
-# # Change to non-root privilege
+# Change to non-root privilege
 USER deepspeed
 
 ##############################################################################
@@ -204,7 +200,6 @@ RUN cd ${STAGE_DIR}/DeepSpeed && \
 RUN rm -rf ${STAGE_DIR}/DeepSpeed
 RUN python -c "import deepspeed; print(deepspeed.__version__)"
 
-
 ##############################################################################
 # apex
 ##############################################################################
@@ -215,4 +210,4 @@ RUN cd ${STAGE_DIR}/apex
 # otherwise
 RUN pip install -v --disable-pip-version-check --no-cache-dir --no-build-isolation --global-option="--cpp_ext" --global-option="--cuda_ext" ${STAGE_DIR}/apex/
 
-RUN pip install nltk
+USER root
