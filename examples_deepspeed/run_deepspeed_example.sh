@@ -1,13 +1,13 @@
 #!/bin/bash
 set -ex
 
-VOCAB="/workspace/llm/dataset/gpt2-vocab.json"
-MERGE="/workspace/llm/dataset/gpt2-merges.txt"
-PreProcessedCorpus="/workspace/llm/dataset/oscar-gpt2_text_document"
+VOCAB="/workspace/dataset/gpt2-vocab.json"
+MERGE="/workspace/dataset/gpt2-merges.txt"
+PreProcessedCorpus="/workspace/dataset/oscar-gpt2_text_document"
 
 
 TP=1
-PP=2
+PP=1
 NLAYERS=24
 HIDDEN=512
 
