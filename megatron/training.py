@@ -1211,7 +1211,7 @@ def train(forward_step_func, model, optimizer, opt_param_scheduler,
         schedule=torch.profiler.schedule(skip_first=1, wait=1, warmup=1, active=1, repeat=1),
         on_trace_ready=trace_handler,
         profile_memory=True,
-        with_stack=True,
+        #with_stack=True,
         record_shapes=True
     )
     

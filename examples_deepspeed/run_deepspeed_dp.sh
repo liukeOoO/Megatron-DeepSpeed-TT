@@ -322,7 +322,7 @@ fi
 
 ZERO_STAGE=2
 OFFLOAD="false"
-OFFLOAD="true"
+#OFFLOAD="true"
 
 if [ "${OFFLOAD}" = "false" ]; then
 template_json="examples_deepspeed/ds_config_TEMPLATE.json"
