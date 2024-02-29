@@ -1,6 +1,6 @@
 #docker build -t megatron -f ./Dockerfile .
 
-docker_img="megatron"
+docker_img="megatron:latest"
 
 megatron_deepspeed_path="/home/ubuntu/Megatron-DeepSpeed-TT"
 llm_path="/home/ubuntu/Megatron-llm"
@@ -12,6 +12,6 @@ docker run --gpus all --rm -it -P \
     -v $megatron_deepspeed_path:/workspace/megatron_deepspeed \
     -v $llm_path:/workspace/llm \
     -w /${work_dir} \
-    ${docker_img}:latest \
+    ${docker_img} \
     bash
     

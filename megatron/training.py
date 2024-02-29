@@ -80,7 +80,9 @@ def _create_ds_config_dict():
         ds_config_dict["checkpoint"] = {"load_universal": True}
 
     # Clear config path
-    args.deepspeed_config = None 
+    args.deepspeed_config = None
+
+    print(ds_config_dict)
 
     return ds_config_dict
     
@@ -1209,7 +1211,7 @@ def train(forward_step_func, model, optimizer, opt_param_scheduler,
         schedule=torch.profiler.schedule(skip_first=1, wait=1, warmup=1, active=1, repeat=1),
         on_trace_ready=trace_handler,
         profile_memory=True,
-        #with_stack=True,
+        with_stack=True,
         record_shapes=True
     )
     

@@ -203,10 +203,13 @@ mkdir -p ${TENSORBOARD_DIR}
 CHECKPOINT_PATH="${OUTPUT_BASEPATH}/checkpoint/${NAME}"
 
 
-VOCAB_PATH=/data/users/guanhua/Megatron-DeepSpeed/dataset/gpt2-vocab.json
-MERGE_PATH=/data/users/guanhua/Megatron-DeepSpeed/dataset/gpt2-merges.txt
+#VOCAB_PATH=/data/users/guanhua/Megatron-DeepSpeed/dataset/gpt2-vocab.json
+#MERGE_PATH=/data/users/guanhua/Megatron-DeepSpeed/dataset/gpt2-merges.txt
 # Public the Pile dataset, can be downloaded at https://mystic.the-eye.eu/public/AI/pile_neox/
-DATA_BLEND=/data/users/guanhua/Megatron-DeepSpeed/dataset/BookCorpusDataset_text_document
+#DATA_BLEND=/data/users/guanhua/Megatron-DeepSpeed/dataset/BookCorpusDataset_text_document
+VOCAB_PATH="/workspace/llm/dataset/gpt2-vocab.json"
+MERGE_PATH="/workspace/llm/dataset/gpt2-merges.txt"
+DATA_BLEND="/workspace/llm/dataset/oscar-gpt2_text_document"
 
 ###############################################################################
 data_options=" \
