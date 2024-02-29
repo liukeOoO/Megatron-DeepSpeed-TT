@@ -7,18 +7,16 @@ PreProcessedCorpus="/workspace/llm/dataset/oscar-gpt2_text_document"
 
 
 TP=1
-PP=1
-NLAYERS=1
+PP=2
+NLAYERS=24
 HIDDEN=512
 
 SEQ_LENGTH=20
-nGPUs=4
-MICRO_BATCH=16
-GLOBAL_BATCH=$((nGPUs * MICRO_BATCH))
+GLOBAL_BATCH=64
+MICRO_BATCH=8
 
-DS_CONFIG="/workspace/megatron_deepspeed/examples_deepspeed/ds_config.json"
+DS_CONFIG="examples_deepspeed/ds_config.json"
 ZERO_STAGE=0
-
 cat <<EOT > $DS_CONFIG
 {
   "train_batch_size" : $GLOBAL_BATCH,
@@ -46,7 +44,7 @@ export NCCL_DEBUG=warn
 
 ds_args=""
 ds_args=" --deepspeed ${ds_args}"
-ds_args=" --no-pipeline-parallel ${ds_args}" 
+#ds_args=" --no-pipeline-parallel ${ds_args}" 
 ds_args=" --deepspeed_config=$DS_CONFIG ${ds_args}"
 ds_args=" --zero-stage=$ZERO_STAGE ${ds_args}"
 ds_args=" --deepspeed-activation-checkpointing ${ds_args}"
