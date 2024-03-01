@@ -839,6 +839,8 @@ def _add_training_args(parser):
                        '-o <path/to/output_file> --force-overwrite true '
                        '--capture-range=cudaProfilerApi '
                        '--capture-range-end=stop`.')
+    group.add_argument('--with-stack', action='store_true',
+                       help='Profile with function call stack')
     group.add_argument('--profile-step-start', type=int, default=10,
                        help='Global step to start profiling.')
     group.add_argument('--profile-step-end', type=int, default=12,

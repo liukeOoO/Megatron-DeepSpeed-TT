@@ -230,6 +230,7 @@ mkdir -p ${TENSORBOARD_DIR}
 #CHECKPOINT_PATH="${OUTPUT_BASEPATH}/checkpoint/${NAME}"
 
 # profiler
+PROF_STACK="true"
 PROF_STATR=3
 PROF_STOP=3
 PROF_PATH="${OUTPUT_BASEPATH}"
@@ -319,10 +320,17 @@ megatron_options="${megatron_options} \
         --disable-moe-token-dropping"
 fi
 
+if [ "${PROF_STACK}" = "true" ]; then
+megatron_options="${megatron_options} \
+        --with-stack"
+fi
+
 
 ZERO_STAGE=2
 OFFLOAD="false"
-#OFFLOAD="true"
+OFFLOAD="true"
+CONFIG_FP16_ENABLED="false"
+CONFIG_BF16_ENABLED="true"
 
 if [ "${OFFLOAD}" = "false" ]; then
 template_json="examples_deepspeed/ds_config_TEMPLATE.json"
@@ -332,8 +340,8 @@ sed "s/CONFIG_BATCH_SIZE/${GLOBAL_BATCH_SIZE}/" ${template_json} \
     | sed "s/LOG_INTERVAL/${LOG_INTERVAL}/" \
     | sed "s/ZERO_STAGE/${ZERO_STAGE}/" \
     | sed "s/PRESCALE_GRAD/true/" \
-    | sed "s/CONFIG_FP16_ENABLED/false/" \
-    | sed "s/CONFIG_BF16_ENABLED/true/" \
+    | sed "s/CONFIG_FP16_ENABLED/${CONFIG_FP16_ENABLED}/" \
+    | sed "s/CONFIG_BF16_ENABLED/${CONFIG_BF16_ENABLED}/" \
     | sed "s/CONFIG_CL_ENABLED/${CL_ENABLED}/" \
     | sed "s/CONFIG_CL_MIN/${CL_START_SEQLEN}/" \
     | sed "s/CONFIG_CL_MAX/${SEQ_LEN}/" \
@@ -342,7 +350,8 @@ sed "s/CONFIG_BATCH_SIZE/${GLOBAL_BATCH_SIZE}/" ${template_json} \
 fi
 
 if [ "${OFFLOAD}" = "true" ]; then
-megatron_options="${megatron_options} --cpu-optimizer"
+megatron_options="${megatron_options} \
+        --cpu-optimizer"
 
 OFFLOAD_RATIO=1
 template_json="examples_deepspeed/ds_config_offload_TEMPLATE.json"
@@ -353,8 +362,8 @@ sed "s/CONFIG_BATCH_SIZE/${GLOBAL_BATCH_SIZE}/" ${template_json} \
     | sed "s/ZERO_STAGE/${ZERO_STAGE}/" \
     | sed "s/OFFLOAD_RATIO/${OFFLOAD_RATIO}/" \
     | sed "s/PRESCALE_GRAD/true/" \
-    | sed "s/CONFIG_FP16_ENABLED/false/" \
-    | sed "s/CONFIG_BF16_ENABLED/true/" \
+    | sed "s/CONFIG_FP16_ENABLED/${CONFIG_FP16_ENABLED}/" \
+    | sed "s/CONFIG_BF16_ENABLED/${CONFIG_BF16_ENABLED}/" \
     | sed "s/CONFIG_CL_ENABLED/${CL_ENABLED}/" \
     | sed "s/CONFIG_CL_MIN/${CL_START_SEQLEN}/" \
     | sed "s/CONFIG_CL_MAX/${SEQ_LEN}/" \

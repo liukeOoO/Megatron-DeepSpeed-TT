@@ -1186,6 +1186,7 @@ def train(forward_step_func, model, optimizer, opt_param_scheduler,
     
     # prof: ET
     astrasim_path = args.profile_trace_path
+    with_stack = args.with_stack
     local_rank = torch.distributed.get_rank()
     et_file = "{}/et/worker_{}.json".format(astrasim_path, local_rank)
     et = ExecutionTraceObserver()
@@ -1211,7 +1212,7 @@ def train(forward_step_func, model, optimizer, opt_param_scheduler,
         schedule=torch.profiler.schedule(skip_first=1, wait=1, warmup=1, active=1, repeat=1),
         on_trace_ready=trace_handler,
         profile_memory=True,
-        #with_stack=True,
+        with_stack=with_stack,
         record_shapes=True
     )
     
