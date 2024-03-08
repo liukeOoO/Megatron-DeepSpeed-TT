@@ -11,22 +11,22 @@ SEQ_LEN=20
 ### your desired model size or build your own configs
 
 ## 1-layer GPT
-MODEL_SIZE="1layer"
-NUM_LAYERS=1
-HIDDEN_SIZE=768
-NUM_ATTN_HEADS=12
-GLOBAL_BATCH_SIZE=256
-LR=3.0e-4
-MIN_LR=3.0e-5
-
-## GPT-3 Small 125M
-#MODEL_SIZE=0.125
-#NUM_LAYERS=12
+#MODEL_SIZE="1layer"
+#NUM_LAYERS=1
 #HIDDEN_SIZE=768
 #NUM_ATTN_HEADS=12
 #GLOBAL_BATCH_SIZE=256
-#LR=6.0e-4
-#MIN_LR=6.0e-5
+#LR=3.0e-4
+#MIN_LR=3.0e-5
+
+## GPT-3 Small 125M
+MODEL_SIZE=0.125
+NUM_LAYERS=12
+HIDDEN_SIZE=768
+NUM_ATTN_HEADS=12
+GLOBAL_BATCH_SIZE=256
+LR=6.0e-4
+MIN_LR=6.0e-5
 
 ## GPT-3 Medium 350M
 #MODEL_SIZE=0.35
@@ -146,6 +146,7 @@ PP_SIZE=1
 ### MoE configs
 ## Number of experts. EP_SIZE 1 means dense model without MoE
 EP_SIZE=1
+# EP_SIZE=1
 # EP_SIZE=128
 
 if [ $EP_SIZE -gt $NUM_GPUS ]; then
@@ -202,8 +203,8 @@ INIT_STD=0.014
 # INIT_STD=0.01
 
 ## Activation checkpointing saves GPU memory, but reduces training speed
-ACTIVATION_CHECKPOINT="true"
-# ACTIVATION_CHECKPOINT="false"
+# ACTIVATION_CHECKPOINT="true"
+ACTIVATION_CHECKPOINT="false"
 ###############################################################################
 ### Output, prof and data configs
 current_time=$(date "+%Y.%m.%d-%H.%M.%S")
@@ -241,16 +242,16 @@ mkdir -p ${OUTPUT_BASEPATH}/kineto/
 #MERGE_PATH=/data/users/guanhua/Megatron-DeepSpeed/dataset/gpt2-merges.txt
 # Public the Pile dataset, can be downloaded at https://mystic.the-eye.eu/public/AI/pile_neox/
 #DATA_BLEND=/data/users/guanhua/Megatron-DeepSpeed/dataset/BookCorpusDataset_text_document
-VOCAB_PATH="/workspace/llm/dataset/gpt2-vocab.json"
-MERGE_PATH="/workspace/llm/dataset/gpt2-merges.txt"
-DATA_BLEND="/workspace/llm/dataset/oscar-gpt2_text_document"
+VOCAB_PATH="/workspace/datasets/gpt2-vocab.json"
+MERGE_PATH="/workspace/datasets/gpt2-merges.txt"
+DATA_BLEND="/workspace/datasets/oscar-gpt2_text_document"
 
 ###############################################################################
 data_options=" \
-         --vocab-file ${VOCAB_PATH} \
-         --merge-file ${MERGE_PATH} \
-         --data-path ${DATA_BLEND} \
-         --data-impl mmap"
+        --vocab-file ${VOCAB_PATH} \
+        --merge-file ${MERGE_PATH} \
+        --data-path ${DATA_BLEND} \
+        --data-impl mmap"
         
 megatron_options=" \
         --override-opt_param-scheduler \
@@ -326,9 +327,17 @@ megatron_options="${megatron_options} \
 fi
 
 
+ZERO_STAGE=0
+OFFLOAD="false"
+
 ZERO_STAGE=2
 OFFLOAD="false"
 OFFLOAD="true"
+
+ZERO_STAGE=3
+OFFLOAD="false"
+OFFLOAD="true"
+
 CONFIG_FP16_ENABLED="true"
 CONFIG_BF16_ENABLED="false"
 
