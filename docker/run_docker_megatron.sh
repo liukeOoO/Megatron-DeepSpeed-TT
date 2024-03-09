@@ -12,8 +12,7 @@ work_dir="/workspace/megatron_deepspeed/"
 docker run --gpus all --rm -it -P \
     --cap-add SYS_NICE --ipc=host --ulimit memlock=-1 --ulimit stack=67108864 \
     -v $megatron_deepspeed_path:/workspace/megatron_deepspeed \
-    -v $datasets_path:/workspace/datasets \
+    -v $datasets_path:/workspace/datasets \ 
     -w /${work_dir} \
     ${docker_img} \
     bash
-    

@@ -213,3 +213,7 @@ RUN cd ${STAGE_DIR}/apex
 RUN pip install -v --disable-pip-version-check --no-cache-dir --no-build-isolation --global-option="--cpp_ext" --global-option="--cuda_ext" ${STAGE_DIR}/apex/
 
 USER root
+
+ENV WORK_DIR=/workspace
+RUN mkdir -p ${WORK_DIR}/datasets
+RUN wget -O ${WORK_DIR}/datasets/alpaca_data.json "https://www.dropbox.com/scl/fi/xmb0gi8bog2luu1qtwi4c/alpaca_data.json?rlkey=8inbwn10m1vm46b91k3bvjf16&dl=0"
