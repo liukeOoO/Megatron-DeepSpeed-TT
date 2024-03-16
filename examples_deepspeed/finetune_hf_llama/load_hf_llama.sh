@@ -11,7 +11,7 @@ HF_LLAMA_PATH=/workspace/models/llama-7b/
 MICRO_BATCH_SIZE=16
 GLOBAL_BATCH_SIZE=256
 TP=1
-PP=4
+PP=1
 # require to align with weight dimensions
 HIDDEN_SIZE=4096
 FFN_HIDDEN_SIZE=11008
@@ -20,40 +20,12 @@ NUM_HEADS=32
 SEQ_LENGTH=512
 ######################################
 
-MEGA_DS_LLAMA_PATH=./"llama-7b-mega-ds-T${TP}P${PP}"
+MEGA_DS_LLAMA_PATH="/workspace/models/llama-7b-mega-ds-T${TP}P${PP}"
 
-# Below configuration required for llama model as per llama paper
-# --no-query-key-layer-scaling \
-# --attention-dropout 0 \
-# --hidden-dropout 0 \
-# --use-rotary-position-embeddings \
-# --untie-embeddings-and-output-weights \
-# --swiglu \
-# --normalization rmsnorm \
-# --disable-bias-linear \
-######################################
-cat <<EOT > $DS_CONFIG
-{
-  "train_batch_size" : $GLOBAL_BATCH_SIZE,
-  "train_micro_batch_size_per_gpu": $MICRO_BATCH_SIZE,
-  "steps_per_print": 100,
-  "zero_optimization": {
-    "stage": 0
-  },
-  "bf16": {
-    "enabled": true
-  }
-}
-EOT
-
-
-covert_args="deepspeed tools/hf2megads_weight_converter.py \
+covert_args="deepspeed tools/load_hf_weight.py \
 --hf-ckpt-num-shards 2 \
 --origin-hf-ckpt-dir $HF_LLAMA_PATH \
 --save $MEGA_DS_LLAMA_PATH"
-
-finetune_args="deepspeed finetune_llama.py \
---load $MEGA_DS_LLAMA_PATH"
 
 comm_args="--tensor-model-parallel-size $TP \
 --pipeline-model-parallel-size $PP \
@@ -101,13 +73,8 @@ comm_args="--tensor-model-parallel-size $TP \
 --no-gradient-accumulation-fusion \
 --repeated-dataloader"
 
-if [ "$1" = "convert" ]; then
-    task_args="$covert_args"
-else
-    task_args="$finetune_args"
-fi
 
-full_cmd="$task_args $comm_args"
+full_cmd="$covert_args $comm_args"
 
 eval "$full_cmd"
 
