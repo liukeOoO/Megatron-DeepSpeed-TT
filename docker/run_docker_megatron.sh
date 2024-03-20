@@ -1,6 +1,7 @@
 # docker build -t megatron -f ./Dockerfile .
-# docker tag megatron:latest keliu354/megatron:v5
-# docker push keliu354/megatron:v5
+# docker tag megatron:latest keliu354/megatron:v6
+# docker push keliu354/megatron:v6
+# docker system prune --volumes
 
 docker_img="megatron:latest"
 
