@@ -10,7 +10,11 @@ from transformers import AutoConfig, AutoTokenizer, AutoModelForCausalLM
 if __name__ == "__main__":
     token = "" # paste your token from hf here
     model_card = "huggyllama/llama-7b"
-    model_card = "tiiuae/falcon-40b"
+    model_card = "huggyllama/llama-13b"
+    model_card = "huggyllama/llama-30b"
+    #model_card = "huggyllama/llama-65b"
+
+    #model_card = "tiiuae/falcon-40b"
     
     tokenizer = AutoTokenizer.from_pretrained(model_card, token=token,)
     model = AutoModelForCausalLM.from_pretrained(model_card, token=token, torch_dtype=torch.float16)
