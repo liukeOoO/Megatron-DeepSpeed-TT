@@ -12,7 +12,7 @@ if __name__ == "__main__":
     model_card = "huggyllama/llama-7b"
     model_card = "huggyllama/llama-13b"
     model_card = "huggyllama/llama-30b"
-    #model_card = "huggyllama/llama-65b"
+    model_card = "huggyllama/llama-65b"
 
     #model_card = "tiiuae/falcon-40b"
     
