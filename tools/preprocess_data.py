@@ -110,7 +110,7 @@ class Partition(object):
             current = time.time()
             elapsed = current - proc_start
             mbs = total_bytes_processed/elapsed/1024/1024
-            print(f"Processed {count} documents",
+            print(f"Processed {count} documents for {elapsed} sec",
                   f"({count/elapsed} docs/s, {mbs} MB/s).",
                   file=sys.stderr)
 

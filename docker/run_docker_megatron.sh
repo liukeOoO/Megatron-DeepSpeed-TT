@@ -8,11 +8,14 @@ docker_img="megatron:latest"
 home_dir_0="/home/ubuntu/Megatron-DeepSpeed-TT"
 docker_dir_0="/workspace/megatron_deepspeed"
 
-home_dir_1="/home/ubuntu/datasets-llm"
-docker_dir_1="/workspace/datasets"
+home_dir_1="/home/ubuntu/astrasim-tt-2.0"
+docker_dir_1="/workspace/astrasim"
 
-home_dir_2="/home/ubuntu/models-llm"
-docker_dir_2="/workspace/models"
+home_dir_2="/home/ubuntu/datasets-llm"
+docker_dir_2="/workspace/datasets"
+
+home_dir_3="/home/ubuntu/models-llm"
+docker_dir_3="/workspace/models"
 
 work_dir=${docker_dir_0}
 
@@ -21,6 +24,7 @@ docker run --gpus all --rm -it -P \
     -v ${home_dir_0}:${docker_dir_0} \
     -v ${home_dir_1}:${docker_dir_1} \
     -v ${home_dir_2}:${docker_dir_2} \
+    -v ${home_dir_3}:${docker_dir_3} \
     -w /${work_dir} \
     ${docker_img} \
     bash

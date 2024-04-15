@@ -1,10 +1,10 @@
-corpus_f="/workspace/dataset/oscar-1GB.jsonl"
-vocab_f="/workspace/dataset/gpt2-vocab.json"
-merge_f="/workspace/dataset/gpt2-merges.txt"
+corpus_f="/workspace/datasets/oscar-1GB.jsonl"
+vocab_f="/workspace/datasets/gpt2-vocab.json"
+merge_f="/workspace/datasets/gpt2-merges.txt"
 output_prefix="oscar-gpt2"
-n_workers=8
+n_workers=16
 
-export PROTOCOL_BUFFERS_PYTHON_IMPLEMENTATION=python
+#export PROTOCOL_BUFFERS_PYTHON_IMPLEMENTATION=python
 python tools/preprocess_data.py \
        --input ${corpus_f} \
        --output-prefix ${output_prefix} \
@@ -15,5 +15,5 @@ python tools/preprocess_data.py \
        --append-eod \
        --workers $n_workers
 
-mv oscar-gpt2_text_document.bin /workspace/dataset/
-mv oscar-gpt2_text_document.idx /workspace/dataset/
+mv oscar-gpt2_text_document.bin /workspace/datasets/
+mv oscar-gpt2_text_document.idx /workspace/datasets/
