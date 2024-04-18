@@ -4,7 +4,7 @@ DIR=`pwd`
 ### Main configs
 ## GPT-3 models use 2K sequence length/context window
 #SEQ_LEN=2048
-SEQ_LEN=20
+SEQ_LEN=64
 
 ### The "GPT-3 XXX" below are configs from GPT-3 paper
 ### https://arxiv.org/abs/2005.14165, choose based on
@@ -96,7 +96,7 @@ MIN_LR=6.0e-5
 ## For MoE model, we found sometimes training a bit more to 330B tokens helps
 # TRAIN_TOKENS=300000000000
 # TRAIN_TOKENS=330000000000
-TRAIN_TOKENS=3000
+TRAIN_TOKENS=32000
 
 ## TRAIN_SAMPLES is another termination condition and also affect the number of 
 ## data samples to be indexed. Since we want to reach the TRAIN_TOKENS
@@ -126,28 +126,13 @@ LR_DECAY_TOKENS=$(( ${SEQ_LEN} * 2 ))
 ## Make sure that BATCH_SIZE <= GLOBAL_BATCH_SIZE*PP_SIZE*MP_SIZE/NUM_GPUS
 
 NUM_GPUS=4
-
-## Micro batch size per GPU
-# BATCH_SIZE=2
-BATCH_SIZE=8
-
-# dp only
-GLOBAL_BATCH_SIZE=$(( ${NUM_GPUS} * ${BATCH_SIZE} ))
-GLOBAL_BATCH_SIZE=256
-
-## Model parallelism, 1 is no MP
-MP_SIZE=1
-
-## Pipeline parallelism
-## Currently we don't support PP for MoE. To disable PP, set PP_SIZE
-## to 1 and use the "--no-pipeline-parallel" arg.
+MP_SIZE=2
 PP_SIZE=1
-###############################################################################
-### MoE configs
-## Number of experts. EP_SIZE 1 means dense model without MoE
 EP_SIZE=1
-# EP_SIZE=1
-# EP_SIZE=128
+
+BATCH_SIZE=16
+GLOBAL_BATCH_SIZE=$(( 4 * ${NUM_GPUS} * ${BATCH_SIZE} / ${MP_SIZE} / ${PP_SIZE} ))
+echo "GLOBAL_BATCH_SIZE = ${GLOBAL_BATCH_SIZE}, BATCH_SIZE_per_GPU = ${BATCH_SIZE}" 
 
 if [ $EP_SIZE -gt $NUM_GPUS ]; then
     EP_PARALLEL_SIZE=$NUM_GPUS
@@ -231,8 +216,7 @@ mkdir -p ${TENSORBOARD_DIR}
 #CHECKPOINT_PATH="${OUTPUT_BASEPATH}/checkpoint/${NAME}"
 
 # profiler
-PROF_STACK="true"
-PROF_STACK="false"
+PROF_STACK="true"  # "false"
 PROF_STATR=3
 PROF_STOP=3
 PROF_PATH="${OUTPUT_BASEPATH}"
